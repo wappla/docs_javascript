@@ -28,8 +28,10 @@
             "imports": "always-multiline",
             "exports": "always-multiline"
         }],
+        "jsx-a11y/anchor-is-valid": "off",
+
         "react/prop-types": "off",
         "react/jsx-filename-extension": "off",
-        "jsx-a11y/anchor-is-valid": "off"
+        "react/jsx-one-expression-per-line": "off"
     }
 }
