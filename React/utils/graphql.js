@@ -18,15 +18,16 @@ export const connectionToCollection = (connection = { edges: [] }) => (
 
 export const parseGraphQLErrors = (errors) => {
     const parsedErrors = errors.reduce((errorAcc, error) => {
-        const { extensions } = error
+        const { extensions, message } = error
         const hasValidation = extensions.category === 'validation'
-        let fields = []
+        let formErrors = []
         if (hasValidation) {
+            // Get all validation errors
             const { validation } = extensions
-            fields = Object.keys(validation).reduce((fieldAcc, field) => {
-                const mappedField = validation[field].map((message) => ({
+            formErrors = Object.keys(validation).reduce((fieldAcc, field) => {
+                const mappedField = validation[field].map((validationMessage) => ({
                     path: field.replace('input.', ''),
-                    message: message.replace('input.', ''),
+                    message: validationMessage.replace('input.', ''),
                 }))
 
                 return [
@@ -35,8 +36,9 @@ export const parseGraphQLErrors = (errors) => {
                 ]
             }, [])
         } else {
-            const { message, path } = error
-            fields = path.reduce((pathAcc, pathItem) => ([
+            // Map general errors to path for mutation name
+            const { path } = error
+            formErrors = path.reduce((pathAcc, pathItem) => ([
                 ...pathAcc,
                 {
                     path: pathItem,
@@ -45,11 +47,14 @@ export const parseGraphQLErrors = (errors) => {
             ]), [])
         }
 
-        return [
-            ...errorAcc,
-            ...fields,
-        ]
-    }, [])
+        return {
+            formErrors: [...errorAcc.formErrors, ...formErrors],
+            generalErrors: [...errorAcc.generalErrors, [message]],
+        }
+    }, {
+        formErrors: [],
+        generalErrors: [],
+    })
 
     return parsedErrors
 }
