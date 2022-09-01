@@ -16,7 +16,7 @@ npm i --save-dev eslint eslint-config-airbnb eslint-plugin-import eslint-plugin-
 ## Package.json
 
 ### Frontend
-```
+```json
 "scripts": {
     "modules:install": "...",
     "modules:remove": "...",
@@ -33,7 +33,7 @@ npm i --save-dev eslint eslint-config-airbnb eslint-plugin-import eslint-plugin-
 }
 ```
 ### Mobile
-```
+```json
 "scripts": {
     "modules:install": "...",
     "modules:remove": "...",
@@ -51,7 +51,7 @@ npm i --save-dev eslint eslint-config-airbnb eslint-plugin-import eslint-plugin-
 }
 ```
 ### Backend
-```
+```json
 "scripts": {
     "modules:install": "...",
     "modules:remove": "...",
@@ -71,4 +71,22 @@ npm i --save-dev eslint eslint-config-airbnb eslint-plugin-import eslint-plugin-
     "deploy:staging": "...",
     "deploy:production": "...",
 }
+```
+
+### Turbo global setup
+```json
+"scripts": {
+    "dev": "turbo run dev",
+    "docker:start": "docker compose --profile develop up -d",
+    "docker:stop": "docker compose stop",
+    "docker:down": "docker compose down",
+    "init": "npm run copy:env && npm run lingui:compile",
+    "copy:env": "cp .env.example .env && (cd packages/api && cp .env.example .env); (cd packages/app && cp .env.example .env);",
+    "lint": "eslint ./packages/*",
+    "modules:install": "npm i",
+    "modules:remove": "rm -rf ./node_modules",
+    "modules:reset": "npm run modules:remove && npm run modules:install",
+    "test": "turbo run test",
+    "lingui:compile": "turbo run lingui:compile"
+    },
 ```
